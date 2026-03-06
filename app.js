@@ -1,30 +1,80 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzk4qhvqpu9wmBoeBSmXL6O5ZDDWjIEx9QqBHRZH4BHdXXDEE9kANDnye4jQ-RDca5uwQ/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyGJEt_ckS-4A_5j65N_Eka-R1_Ujxa8wUgwXOdeM2GCKdfwHlXC4iiZRROpuIm9DyzdA/exec";
 
 function submitVisit(){
 
-navigator.geolocation.getCurrentPosition(function(pos){
+  let agent = document.getElementById("agent").value;
+  let type = document.getElementById("type").value;
+  let shop = document.getElementById("shop").value;
+  let mobile = document.getElementById("mobile").value;
+  let area = document.getElementById("area").value;
+  let pincode = document.getElementById("pincode").value;
+  let note = document.getElementById("note").value;
+  let photoFile = document.getElementById("photo").files[0];
 
-let formData = new FormData();
+  if(!shop || !mobile){
+    alert("Please fill required fields");
+    return;
+  }
 
-formData.append("agent", document.getElementById("agent").value);
-formData.append("type", document.getElementById("type").value);
-formData.append("shop", document.getElementById("shop").value);
-formData.append("mobile", document.getElementById("mobile").value);
-formData.append("area", document.getElementById("area").value);
-formData.append("pincode", document.getElementById("pincode").value);
-formData.append("note", document.getElementById("note").value);
+  navigator.geolocation.getCurrentPosition(function(position){
 
-formData.append("lat", pos.coords.latitude);
-formData.append("lng", pos.coords.longitude);
+    let lat = position.coords.latitude;
+    let lng = position.coords.longitude;
 
-fetch(SCRIPT_URL,{
-method:"POST",
-body:formData
-})
-.then(r=>r.text())
-.then(data=>{
-document.getElementById("status").innerText="Submitted";
-});
+    if(photoFile){
 
-});
+      let reader = new FileReader();
+
+      reader.onload = function(e){
+
+        let base64 = e.target.result.split(",")[1];
+
+        sendData(agent,type,shop,mobile,area,pincode,note,lat,lng,base64);
+
+      };
+
+      reader.readAsDataURL(photoFile);
+
+    } else {
+
+      sendData(agent,type,shop,mobile,area,pincode,note,lat,lng,"");
+
+    }
+
+  });
+
+}
+
+
+function sendData(agent,type,shop,mobile,area,pincode,note,lat,lng,photo){
+
+  let formData = new FormData();
+
+  formData.append("agent",agent);
+  formData.append("type",type);
+  formData.append("shop",shop);
+  formData.append("mobile",mobile);
+  formData.append("area",area);
+  formData.append("pincode",pincode);
+  formData.append("note",note);
+  formData.append("lat",lat);
+  formData.append("lng",lng);
+  formData.append("photo",photo);
+
+  fetch(SCRIPT_URL,{
+    method:"POST",
+    body:formData
+  })
+  .then(res => res.text())
+  .then(data => {
+
+    document.getElementById("status").innerText = "Submitted Successfully";
+
+  })
+  .catch(err => {
+
+    alert("Submission failed");
+
+  });
+
 }
