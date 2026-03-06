@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1565c0">
+
+<link rel="manifest" href="manifest.json">
+
+<link rel="icon" href="icon-192.png">
+
+<title>Field Sales App</title>
+
+<style>
+body{
+font-family:Poppins,Arial;
+background:#f4f6f9;
+margin:0;
+}
+
+.header{
+background:#1565c0;
+color:white;
+padding:16px;
+text-align:center;
+font-size:18px;
+font-weight:600;
+}
+
+.card{
+background:white;
+margin:15px;
+padding:16px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+input,select,button{
+width:100%;
+padding:10px;
+margin-top:8px;
+margin-bottom:12px;
+border-radius:8px;
+border:1px solid #ddd;
+}
+
+button{
+background:#2e7d32;
+color:white;
+font-size:16px;
+border:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+Kisan Fresh Field App
+</div>
+
+<div class="card">
+
+<label>Agent</label>
+<select id="agent">
+<option>Agent1</option>
+<option>Agent2</option>
+<option>Agent3</option>
+<option>TeamLeader</option>
+</select>
+
+<label>Visit Type</label>
+<select id="type">
+<option>IN</option>
+<option>VISIT</option>
+<option>OUT</option>
+</select>
+
+<label>Shop Name</label>
+<input id="shop">
+
+<label>Mobile</label>
+<input id="mobile">
+
+<label>Area</label>
+<input id="area">
+
+<label>Pincode</label>
+<input id="pincode">
+
+<label>Notes</label>
+<input id="note">
+
+<label>Photo</label>
+<input type="file" id="photo" accept="image/*">
+
+<button onclick="submitVisit()">Submit</button>
+
+<p id="status"></p>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+if('serviceWorker' in navigator){
+navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+
+</body>
+</html>
