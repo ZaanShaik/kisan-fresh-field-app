@@ -2,38 +2,40 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyGJEt_ckS-4A_5j65N_
 
 function submitVisit(){
 
-  let agent = document.getElementById("agent").value;
-  let type = document.getElementById("type").value;
-  let shop = document.getElementById("shop").value;
-  let mobile = document.getElementById("mobile").value;
-  let area = document.getElementById("area").value;
-  let pincode = document.getElementById("pincode").value;
-  let note = document.getElementById("note").value;
-  let photoFile = document.getElementById("photo").files[0];
+  const agent = document.getElementById("agent")?.value || "Agent";
+  const type = document.getElementById("type").value;
+  const shop = document.getElementById("shop").value;
+  const mobile = document.getElementById("mobile").value;
+  const area = document.getElementById("area").value;
+  const pincode = document.getElementById("pincode").value;
+  const note = document.getElementById("note").value;
+  const photoInput = document.getElementById("photo");
 
   if(!shop || !mobile){
-    alert("Please fill required fields");
+    alert("Shop name and mobile required");
     return;
   }
 
   navigator.geolocation.getCurrentPosition(function(position){
 
-    let lat = position.coords.latitude;
-    let lng = position.coords.longitude;
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
 
-    if(photoFile){
+    const file = photoInput.files[0];
 
-      let reader = new FileReader();
+    if(file){
+
+      const reader = new FileReader();
 
       reader.onload = function(e){
 
-        let base64 = e.target.result.split(",")[1];
+        const base64 = e.target.result.split(',')[1];
 
         sendData(agent,type,shop,mobile,area,pincode,note,lat,lng,base64);
 
       };
 
-      reader.readAsDataURL(photoFile);
+      reader.readAsDataURL(file);
 
     } else {
 
@@ -41,6 +43,8 @@ function submitVisit(){
 
     }
 
+  }, function(){
+    alert("Location permission required");
   });
 
 }
@@ -48,7 +52,7 @@ function submitVisit(){
 
 function sendData(agent,type,shop,mobile,area,pincode,note,lat,lng,photo){
 
-  let formData = new FormData();
+  const formData = new FormData();
 
   formData.append("agent",agent);
   formData.append("type",type);
@@ -63,15 +67,15 @@ function sendData(agent,type,shop,mobile,area,pincode,note,lat,lng,photo){
 
   fetch(SCRIPT_URL,{
     method:"POST",
-    body:formData
+    body:formData,
+    mode:"no-cors"
   })
-  .then(res => res.text())
-  .then(data => {
+  .then(()=>{
 
-    document.getElementById("status").innerText = "Submitted Successfully";
+    document.getElementById("status").innerText="Submitted Successfully";
 
   })
-  .catch(err => {
+  .catch(()=>{
 
     alert("Submission failed");
 
